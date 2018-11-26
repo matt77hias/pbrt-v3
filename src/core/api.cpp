@@ -72,6 +72,7 @@
 #include "materials/glass.h"
 #include "materials/hair.h"
 #include "materials/kdsubsurface.h"
+#include "materials/mage.h"
 #include "materials/matte.h"
 #include "materials/metal.h"
 #include "materials/mirror.h"
@@ -543,6 +544,8 @@ std::shared_ptr<Material> MakeMaterial(const std::string &name,
     Material *material = nullptr;
     if (name == "" || name == "none")
         return nullptr;
+	else if (name == "mage")
+		material = CreateMAGEMaterial(mp);
     else if (name == "matte")
         material = CreateMatteMaterial(mp);
     else if (name == "plastic")
