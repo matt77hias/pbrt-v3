@@ -194,6 +194,59 @@ std::string LambertianTransmission::ToString() const {
            std::string(" ]");
 }
 
+//-----------------------------------------------------------------------------
+// BlinnPhongReflection
+//-----------------------------------------------------------------------------
+
+BlinnPhongReflection::BlinnPhongReflection(Spectrum R, Float alpha) noexcept
+	: BxDF(BxDFType(BSDF_REFLECTION | BSDF_DIFFUSE)),
+	m_R(std::move(R)), m_alpha(alpha) {}
+
+BlinnPhongReflection
+::BlinnPhongReflection(const BlinnPhongReflection& bxdf) = default;
+
+BlinnPhongReflection
+::BlinnPhongReflection(BlinnPhongReflection&& bxdf) = default;
+
+BlinnPhongReflection::~BlinnPhongReflection() = default;
+
+Spectrum BlinnPhongReflection::f(const Vector3f& wo, const Vector3f& wi) const {
+	//         R              [   2       ]     Ns + 2
+	// f:= ---------- n_dot_h^[------- - 2] = R ------ n_dot_h^Ns
+	//     pi alpha^2         [alpha^2    ]      pi 2
+
+	const Vector3f wh     = Normalize(wo + wi);
+	const Float wn_dot_wh = CosTheta(wh);
+	if (0.0f > wn_dot_wh) {
+		return {};
+	}
+
+	const Float alpha2    = m_alpha * m_alpha;
+	const Float exponent  = Float(2) / alpha2 - Float(2);
+	const Float norm      = InvPi / alpha2;
+
+	return m_R * norm * std::pow(wn_dot_wh, exponent);
+}
+
+Spectrum BlinnPhongReflection::rho(const Vector3f& wo,
+								   int nSamples,
+								   const Point2f* samples) const {
+	return m_R;
+}
+
+Spectrum BlinnPhongReflection::rho(int nSamples,
+								   const Point2f* samples1,
+								   const Point2f* samples2) const {
+	return m_R;
+}
+
+std::string BlinnPhongReflection::ToString() const {
+	return std::string("[ BlinnPhong R: ") + m_R.ToString()
+		+ StringPrintf(" alpha: %f ]", m_alpha);
+}
+
+//-----------------------------------------------------------------------------
+
 Spectrum OrenNayar::f(const Vector3f &wo, const Vector3f &wi) const {
     Float sinThetaI = SinTheta(wi);
     Float sinThetaO = SinTheta(wo);

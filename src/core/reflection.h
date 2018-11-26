@@ -407,6 +407,63 @@ class LambertianTransmission : public BxDF {
     Spectrum T;
 };
 
+//-----------------------------------------------------------------------------
+// BlinnPhongReflection
+//-----------------------------------------------------------------------------
+
+class BlinnPhongReflection : public BxDF {
+
+public:
+
+	//-------------------------------------------------------------------------
+	// Constructors and Destructors
+	//-------------------------------------------------------------------------
+
+	explicit BlinnPhongReflection(Spectrum R, Float alpha) noexcept;
+
+	BlinnPhongReflection(const BlinnPhongReflection& bxdf);
+	
+	BlinnPhongReflection(BlinnPhongReflection&& bxdf);
+	
+	virtual ~BlinnPhongReflection();
+	
+	//-------------------------------------------------------------------------
+	// Assignment Operators
+	//-------------------------------------------------------------------------
+
+	BlinnPhongReflection& operator=(const BlinnPhongReflection& bxdf) = delete;
+	
+	BlinnPhongReflection& operator=(BlinnPhongReflection&& bxdf) = delete;
+
+	//-------------------------------------------------------------------------
+	// Member Methods
+	//-------------------------------------------------------------------------
+
+	virtual Spectrum f(const Vector3f& wo, const Vector3f& wi) const override;
+
+	virtual Spectrum rho(const Vector3f& wo, 
+						 int nSamples,
+						 const Point2f* samples) const override;
+	
+	virtual Spectrum rho(int nSamples, 
+						 const Point2f* samples1,
+						 const Point2f* samples2) const override;
+
+	virtual std::string ToString() const override;
+
+private:
+
+	//-------------------------------------------------------------------------
+	// Member Variables
+	//-------------------------------------------------------------------------
+
+	Spectrum m_R;
+
+	Float m_alpha;
+};
+
+//-----------------------------------------------------------------------------
+
 class OrenNayar : public BxDF {
   public:
     // OrenNayar Public Methods
