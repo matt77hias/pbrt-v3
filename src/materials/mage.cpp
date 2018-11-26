@@ -15,7 +15,7 @@ namespace pbrt {
 		}
 
 		template<>
-		inline RGBSpectrum Saturate(RGBSpectrum x) noexcept {
+		inline Spectrum Saturate(Spectrum x) noexcept {
 			return x.Clamp(Float(0), Float(1));
 		}
 
@@ -70,7 +70,6 @@ namespace pbrt {
 		static const Spectrum s_dielectric_F0 = Float(0.04f);
 		const auto F_specular = Lerp(metalness, s_dielectric_F0, base_color);
 		const auto F_diffuse  = (Spectrum(1.0f) - F_specular) * (1.0f - metalness);
-
 
 		if (!F_diffuse.IsBlack()) {
 			si->bsdf->Add(ARENA_ALLOC(arena, LambertianReflection)(F_diffuse));
