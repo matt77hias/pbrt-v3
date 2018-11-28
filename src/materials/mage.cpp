@@ -49,7 +49,6 @@ namespace pbrt {
 												  MemoryArena& arena,
 												  TransportMode mode,
 												  bool allowMultipleLobes) const {
-		
 		if (m_bump) {
 			Bump(m_bump, si);
 		}
@@ -62,14 +61,14 @@ namespace pbrt {
 		const auto alpha      = std::max(Float(1e-3f), Sqr(roughness));
 
 		static const Spectrum s_dielectric_F0 = Float(0.04f);
-		const auto F_specular = Lerp(metalness, s_dielectric_F0, base_color);
-		const auto F_diffuse  = (Spectrum(1.0f) - F_specular) * (1.0f - metalness);
+		const auto R_specular = Lerp(metalness, s_dielectric_F0, base_color);
+		const auto R_diffuse  = (Spectrum(1.0f) - R_specular) * (1.0f - metalness) * base_color;
 
-		if (!F_diffuse.IsBlack()) {
-			si->bsdf->Add(ARENA_ALLOC(arena, LambertianReflection)(F_diffuse));
+		if (!R_diffuse.IsBlack()) {
+			si->bsdf->Add(ARENA_ALLOC(arena, LambertianReflection)(R_diffuse));
 		}
-		if (!F_specular.IsBlack()) {
-			si->bsdf->Add(ARENA_ALLOC(arena, BlinnPhongReflection)(F_specular, alpha));
+		if (!R_specular.IsBlack()) {
+			si->bsdf->Add(ARENA_ALLOC(arena, BlinnPhongReflection)(R_specular, alpha));
 		}
 	}
 

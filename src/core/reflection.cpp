@@ -211,9 +211,9 @@ BlinnPhongReflection
 BlinnPhongReflection::~BlinnPhongReflection() = default;
 
 Spectrum BlinnPhongReflection::f(const Vector3f& wo, const Vector3f& wi) const {
-	//         R              [   2       ]     Ns + 2
-	// f:= ---------- n_dot_h^[------- - 2] = R ------ n_dot_h^Ns
-	//     pi alpha^2         [alpha^2    ]      pi 2
+	//         R                [   2       ]     Ns + 2
+	// f:= ------------ n_dot_h^[------- - 2] = R ------ n_dot_h^Ns
+	//     pi 4 alpha^2         [alpha^2    ]      pi 8
 
 	const Vector3f wh     = Normalize(wo + wi);
 	const Float wn_dot_wh = CosTheta(wh);
@@ -223,7 +223,7 @@ Spectrum BlinnPhongReflection::f(const Vector3f& wo, const Vector3f& wi) const {
 
 	const Float alpha2    = m_alpha * m_alpha;
 	const Float exponent  = Float(2) / alpha2 - Float(2);
-	const Float norm      = InvPi / alpha2;
+	const Float norm      = Float(0.25) * InvPi / alpha2;
 
 	return m_R * norm * std::pow(wn_dot_wh, exponent);
 }
