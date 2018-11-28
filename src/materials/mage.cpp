@@ -89,13 +89,13 @@ namespace pbrt {
 		const auto metalness 
 			= mp.FindFloat("metalness", Float(0));
 		auto base_color_texture
-			= mp.GetSpectrumTexture("base_color_texture", s_default_base_color);
+			= mp.GetSpectrumTexture("texture_base_color", s_default_base_color);
 		auto roughness_texture
-			= mp.GetFloatTexture("roughness_texture", Float(1));
+			= mp.GetFloatTexture("texture_roughness", Float(1));
 		auto metalness_texture
-			= mp.GetFloatTexture("metalness_texture", Float(0));
+			= mp.GetFloatTexture("texture_metalness", Float(0));
 		auto bump_texture 
-			= mp.GetFloatTextureOrNull("bump_texture");
+			= mp.GetFloatTextureOrNull("texture_bump");
 
 		return new MAGEMaterial(std::move(base_color),
 								roughness,
