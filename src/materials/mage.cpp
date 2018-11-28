@@ -24,20 +24,14 @@ namespace pbrt {
 		}
 	}
 
-	MAGEMaterial::MAGEMaterial(Spectrum base_color,
-							   Float roughness,
-							   Float metalness,
-							   std::shared_ptr< Texture< Spectrum > > base_color_texture,
-							   std::shared_ptr< Texture< Float > > roughness_texture,
-							   std::shared_ptr< Texture< Float > > metalness_texture,
-							   std::shared_ptr< Texture< Float > > bump_texture) noexcept
+	MAGEMaterial::MAGEMaterial(std::shared_ptr< Texture< Spectrum > > base_color,
+							   std::shared_ptr< Texture< Float > > roughness,
+							   std::shared_ptr< Texture< Float > > metalness,
+							   std::shared_ptr< Texture< Float > > bump) noexcept
 		: m_base_color(std::move(base_color)),
-		m_roughness(roughness),
-		m_metalness(metalness),
-		m_base_color_texture(std::move(base_color_texture)),
-		m_roughness_texture(std::move(roughness_texture)),
-		m_metalness_texture(std::move(metalness_texture)),
-		m_bump_texture(std::move(bump_texture)) {}
+		m_roughness(std::move(roughness)),
+		m_metalness(std::move(metalness)),
+		m_bump(std::move(bump)) {}
 
 	MAGEMaterial::MAGEMaterial(const MAGEMaterial& material) = default;
 
@@ -56,15 +50,15 @@ namespace pbrt {
 												  TransportMode mode,
 												  bool allowMultipleLobes) const {
 		
-		if (m_bump_texture) {
-			Bump(m_bump_texture, si);
+		if (m_bump) {
+			Bump(m_bump, si);
 		}
 
 		si->bsdf = ARENA_ALLOC(arena, BSDF)(*si);
 
-		const auto base_color = Saturate(RGBSpectrum(m_base_color * m_base_color_texture->Evaluate(*si)));
-		const auto metalness  = Saturate(m_roughness  * m_roughness_texture->Evaluate(*si));
-		const auto roughness  = Saturate(m_metalness  * m_metalness_texture->Evaluate(*si));
+		const auto base_color = Saturate(m_base_color->Evaluate(*si));
+		const auto metalness  = Saturate(m_roughness->Evaluate(*si));
+		const auto roughness  = Saturate(m_metalness->Evaluate(*si));
 		const auto alpha      = std::max(Float(1e-3f), Sqr(roughness));
 
 		static const Spectrum s_dielectric_F0 = Float(0.04f);
@@ -82,27 +76,14 @@ namespace pbrt {
 	MAGEMaterial* CreateMAGEMaterial(const TextureParams& mp) {
 		static const Spectrum s_default_base_color;
 
-		auto base_color 
-			= mp.FindSpectrum("base_color", s_default_base_color);
-		const auto roughness
-			= mp.FindFloat("roughness", Float(1));
-		const auto metalness 
-			= mp.FindFloat("metalness", Float(0));
-		auto base_color_texture
-			= mp.GetSpectrumTexture("texture_base_color", s_default_base_color);
-		auto roughness_texture
-			= mp.GetFloatTexture("texture_roughness", Float(1));
-		auto metalness_texture
-			= mp.GetFloatTexture("texture_metalness", Float(0));
-		auto bump_texture 
-			= mp.GetFloatTextureOrNull("texture_bump");
+		auto base_color = mp.GetSpectrumTexture("texture_base_color", s_default_base_color);
+		auto roughness  = mp.GetFloatTexture("texture_roughness", Float(1));
+		auto metalness  = mp.GetFloatTexture("texture_metalness", Float(0));
+		auto bump       = mp.GetFloatTextureOrNull("texture_bump");
 
 		return new MAGEMaterial(std::move(base_color),
-								roughness,
-								metalness,
-								std::move(base_color_texture),
-								std::move(roughness_texture),
-								std::move(metalness_texture),
-								std::move(bump_texture));
+								std::move(roughness),
+								std::move(metalness),
+								std::move(bump));
 	}
 }

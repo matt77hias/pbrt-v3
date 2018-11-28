@@ -31,12 +31,9 @@ namespace pbrt {
 			// Constructors and Destructors
 			//-----------------------------------------------------------------
 			
-			explicit MAGEMaterial(Spectrum base_color,
-								  Float roughness,
-								  Float metalness,
-								  std::shared_ptr< Texture< Spectrum > > base_color_texture,
-								  std::shared_ptr< Texture< Float > > roughness_texture,
-								  std::shared_ptr< Texture< Float > > metalness_texture,
+			explicit MAGEMaterial(std::shared_ptr< Texture< Spectrum > > base_color,
+								  std::shared_ptr< Texture< Float > > roughness,
+								  std::shared_ptr< Texture< Float > > metalness,
 								  std::shared_ptr< Texture< Float > > bump_texture) noexcept;
 			
 			MAGEMaterial(const MAGEMaterial& material);
@@ -68,19 +65,13 @@ namespace pbrt {
 			// Member Variables
 			//-----------------------------------------------------------------
 			
-			Spectrum m_base_color;
+			std::shared_ptr< Texture< Spectrum > > m_base_color;
 
-			Float m_roughness;
+			std::shared_ptr< Texture< Float > > m_roughness;
 
-			Float m_metalness;
+			std::shared_ptr< Texture< Float > > m_metalness;
 
-			std::shared_ptr< Texture< Spectrum > > m_base_color_texture;
-
-			std::shared_ptr< Texture< Float > > m_roughness_texture;
-
-			std::shared_ptr< Texture< Float > > m_metalness_texture;
-
-			std::shared_ptr< Texture< Float > > m_bump_texture;
+			std::shared_ptr< Texture< Float > > m_bump;
 	};
 	
 	//-------------------------------------------------------------------------
