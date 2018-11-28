@@ -76,10 +76,10 @@ namespace pbrt {
 	MAGEMaterial* CreateMAGEMaterial(const TextureParams& mp) {
 		static const Spectrum s_default_base_color;
 
-		auto base_color = mp.GetSpectrumTexture("texture_base_color", s_default_base_color);
-		auto roughness  = mp.GetFloatTexture("texture_roughness", Float(1));
-		auto metalness  = mp.GetFloatTexture("texture_metalness", Float(0));
-		auto bump       = mp.GetFloatTextureOrNull("texture_bump");
+		auto base_color = mp.GetSpectrumTexture("base_color", s_default_base_color);
+		auto roughness  = mp.GetFloatTexture("roughness", Float(1));
+		auto metalness  = mp.GetFloatTexture("metalness", Float(0));
+		auto bump       = mp.GetFloatTextureOrNull("bump");
 
 		return new MAGEMaterial(std::move(base_color),
 								std::move(roughness),
