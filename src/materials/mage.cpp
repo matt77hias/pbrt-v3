@@ -58,11 +58,11 @@ namespace pbrt {
 		const auto base_color = Saturate(m_base_color->Evaluate(*si));
 		const auto metalness  = Saturate(m_roughness->Evaluate(*si));
 		const auto roughness  = Saturate(m_metalness->Evaluate(*si));
-		const auto alpha      = std::max(Float(1e-3f), Sqr(roughness));
+		const auto alpha      = std::max(Float(1e-2f), Sqr(roughness));
 
 		static const Spectrum s_dielectric_F0 = Float(0.04f);
-		const auto R_specular = Lerp(metalness, s_dielectric_F0, base_color);
-		const auto R_diffuse  = (Spectrum(1.0f) - R_specular) * (1.0f - metalness) * base_color;
+		const auto R_specular = Lerp(metalness, base_color, s_dielectric_F0);
+		const auto R_diffuse  = (Spectrum(1) - R_specular) * (Float(1) - metalness) * base_color;
 
 		if (!R_diffuse.IsBlack()) {
 			si->bsdf->Add(ARENA_ALLOC(arena, LambertianReflection)(R_diffuse));
