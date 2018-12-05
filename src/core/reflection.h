@@ -408,6 +408,59 @@ class LambertianTransmission : public BxDF {
 };
 
 //-----------------------------------------------------------------------------
+// IdentityReflection
+//-----------------------------------------------------------------------------
+
+class IdentityReflection : public BxDF {
+
+public:
+
+	//-------------------------------------------------------------------------
+	// Constructors and Destructors
+	//-------------------------------------------------------------------------
+
+	explicit IdentityReflection(Spectrum R) noexcept;
+
+	IdentityReflection(const IdentityReflection& bxdf);
+
+	IdentityReflection(IdentityReflection&& bxdf);
+
+	virtual ~IdentityReflection();
+
+	//-------------------------------------------------------------------------
+	// Assignment Operators
+	//-------------------------------------------------------------------------
+
+	IdentityReflection& operator=(const IdentityReflection& bxdf) = delete;
+
+	IdentityReflection& operator=(IdentityReflection&& bxdf) = delete;
+
+	//-------------------------------------------------------------------------
+	// Member Methods
+	//-------------------------------------------------------------------------
+
+	virtual Spectrum f(const Vector3f& wo, const Vector3f& wi) const override;
+
+	virtual Spectrum rho(const Vector3f& wo,
+						 int nSamples,
+						 const Point2f* samples) const override;
+
+	virtual Spectrum rho(int nSamples,
+						 const Point2f* samples1,
+						 const Point2f* samples2) const override;
+
+	virtual std::string ToString() const override;
+
+private:
+
+	//-------------------------------------------------------------------------
+	// Member Variables
+	//-------------------------------------------------------------------------
+
+	Spectrum m_R;
+};
+
+//-----------------------------------------------------------------------------
 // BlinnPhongReflection
 //-----------------------------------------------------------------------------
 

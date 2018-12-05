@@ -195,6 +195,40 @@ std::string LambertianTransmission::ToString() const {
 }
 
 //-----------------------------------------------------------------------------
+// IdentityReflection
+//-----------------------------------------------------------------------------
+
+IdentityReflection::IdentityReflection(Spectrum R) noexcept
+	: BxDF(BxDFType(BSDF_REFLECTION | BSDF_DIFFUSE)),
+	m_R(std::move(R)) {}
+
+IdentityReflection::IdentityReflection(const IdentityReflection& bxdf) = default;
+
+IdentityReflection::IdentityReflection(IdentityReflection&& bxdf) = default;
+
+IdentityReflection::~IdentityReflection() = default;
+
+Spectrum IdentityReflection::f(const Vector3f& wo, const Vector3f& wi) const {
+	return m_R;
+}
+
+Spectrum IdentityReflection::rho(const Vector3f& wo,
+							  int nSamples,
+							  const Point2f* samples) const {
+	return m_R;
+}
+
+Spectrum IdentityReflection::rho(int nSamples,
+							  const Point2f* samples1,
+							  const Point2f* samples2) const {
+	return m_R;
+}
+
+std::string IdentityReflection::ToString() const {
+	return std::string("[ Debug R: ") + m_R.ToString() + std::string(" ]");
+}
+
+//-----------------------------------------------------------------------------
 // BlinnPhongReflection
 //-----------------------------------------------------------------------------
 
