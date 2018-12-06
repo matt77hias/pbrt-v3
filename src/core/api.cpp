@@ -64,6 +64,7 @@
 #include "lights/distant.h"
 #include "lights/goniometric.h"
 #include "lights/infinite.h"
+#include "lights/mage_omni.h"
 #include "lights/point.h"
 #include "lights/projection.h"
 #include "lights/spot.h"
@@ -739,9 +740,10 @@ std::shared_ptr<Light> MakeLight(const std::string &name,
                                  const MediumInterface &mediumInterface) {
     std::shared_ptr<Light> light;
     if (name == "point")
-        light =
-            CreatePointLight(light2world, mediumInterface.outside, paramSet);
-    else if (name == "spot")
+        light = CreatePointLight(light2world, mediumInterface.outside, paramSet);
+	else if (name == "mage_omni")
+		light = CreateMAGEOmniLight(light2world, mediumInterface.outside, paramSet);
+	else if (name == "spot")
         light = CreateSpotLight(light2world, mediumInterface.outside, paramSet);
     else if (name == "goniometric")
         light = CreateGoniometricLight(light2world, mediumInterface.outside,
