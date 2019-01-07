@@ -56,6 +56,7 @@
 #include "integrators/directlighting.h"
 #include "integrators/mlt.h"
 #include "integrators/ao.h"
+#include "integrators/falsecolor.h"
 #include "integrators/path.h"
 #include "integrators/sppm.h"
 #include "integrators/volpath.h"
@@ -1688,7 +1689,9 @@ Integrator *RenderOptions::MakeIntegrator() const {
     else if (IntegratorName == "directlighting")
         integrator =
             CreateDirectLightingIntegrator(IntegratorParams, sampler, camera);
-    else if (IntegratorName == "path")
+	else if (IntegratorName == "falsecolor")
+		integrator = CreateFalseColorIntegrator(IntegratorParams, sampler, camera);
+	else if (IntegratorName == "path")
         integrator = CreatePathIntegrator(IntegratorParams, sampler, camera);
     else if (IntegratorName == "volpath")
         integrator = CreateVolPathIntegrator(IntegratorParams, sampler, camera);

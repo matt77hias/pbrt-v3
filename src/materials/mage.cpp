@@ -64,12 +64,22 @@ namespace pbrt {
 		const auto R_specular = Lerp(metalness, base_color, s_dielectric_F0);
 		const auto R_diffuse  = (Spectrum(1) - R_specular) * (Float(1) - metalness) * base_color;
 
+	#define MAGE_FALSE_COLOR_BASE_COLOR
+
+	#if defined MAGE_FALSE_COLOR_BASE_COLOR
+		si->bsdf->Add(ARENA_ALLOC(arena, IdentityReflection)(base_color));
+	#elif defined MAGE_FALSE_COLOR_METALNESS
+		si->bsdf->Add(ARENA_ALLOC(arena, IdentityReflection)(metalness));
+	#elif defined MAGE_FALSE_COLOR_ROUGHNESS
+		si->bsdf->Add(ARENA_ALLOC(arena, IdentityReflection)(roughness));
+	#else
 		if (!R_diffuse.IsBlack()) {
 			si->bsdf->Add(ARENA_ALLOC(arena, LambertianReflection)(R_diffuse));
 		}
 		if (!R_specular.IsBlack()) {
 			si->bsdf->Add(ARENA_ALLOC(arena, BlinnPhongReflection)(R_specular, alpha));
 		}
+	#endif
 	}
 
 	MAGEMaterial* CreateMAGEMaterial(const TextureParams& mp) {
