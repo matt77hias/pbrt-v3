@@ -50,45 +50,45 @@ namespace pbrt {
 												  TransportMode mode,
 												  bool allowMultipleLobes) const {
 		if (m_bump) {
-			Bump(m_bump, si);
+			//Bump(m_bump, si);
 		}
 
 		si->bsdf = ARENA_ALLOC(arena, BSDF)(*si);
 
 		const auto base_color = Saturate(m_base_color->Evaluate(*si));
-		const auto metalness  = Saturate(m_roughness->Evaluate(*si));
-		const auto roughness  = Saturate(m_metalness->Evaluate(*si));
+		const auto metalness  = Saturate(m_metalness->Evaluate(*si));
+		const auto roughness  = Saturate(m_roughness->Evaluate(*si));
 		const auto alpha      = std::max(Float(1e-2f), Sqr(roughness));
 
 		static const Spectrum s_dielectric_F0 = Float(0.04f);
 		const auto R_specular = Lerp(metalness, base_color, s_dielectric_F0);
 		const auto R_diffuse  = (Spectrum(1) - R_specular) * (Float(1) - metalness) * base_color;
 
-	#define MAGE_FALSE_COLOR_BASE_COLOR
+		#define MAGE_FALSE_COLOR_ROUGHNESS
 
-	#if defined MAGE_FALSE_COLOR_BASE_COLOR
+		#if defined MAGE_FALSE_COLOR_BASE_COLOR
 		si->bsdf->Add(ARENA_ALLOC(arena, IdentityReflection)(base_color));
-	#elif defined MAGE_FALSE_COLOR_METALNESS
+		#elif defined MAGE_FALSE_COLOR_METALNESS
 		si->bsdf->Add(ARENA_ALLOC(arena, IdentityReflection)(metalness));
-	#elif defined MAGE_FALSE_COLOR_ROUGHNESS
+		#elif defined MAGE_FALSE_COLOR_ROUGHNESS
 		si->bsdf->Add(ARENA_ALLOC(arena, IdentityReflection)(roughness));
-	#else
+		#else
 		if (!R_diffuse.IsBlack()) {
 			si->bsdf->Add(ARENA_ALLOC(arena, LambertianReflection)(R_diffuse));
 		}
 		if (!R_specular.IsBlack()) {
 			si->bsdf->Add(ARENA_ALLOC(arena, BlinnPhongReflection)(R_specular, alpha));
 		}
-	#endif
+		#endif
 	}
 
-	MAGEMaterial* CreateMAGEMaterial(const TextureParams& mp) {
+	MAGEMaterial* CreateMAGEMaterial(const TextureParams& params) {
 		static const Spectrum s_default_base_color;
 
-		auto base_color = mp.GetSpectrumTexture("base_color", s_default_base_color);
-		auto roughness  = mp.GetFloatTexture("roughness", Float(1));
-		auto metalness  = mp.GetFloatTexture("metalness", Float(0));
-		auto bump       = mp.GetFloatTextureOrNull("bump");
+		auto base_color = params.GetSpectrumTexture("base_color", s_default_base_color);
+		auto roughness  = params.GetFloatTexture("roughness", Float(1));
+		auto metalness  = params.GetFloatTexture("metalness", Float(0));
+		auto bump       = params.GetFloatTextureOrNull("bump");
 
 		return new MAGEMaterial(std::move(base_color),
 								std::move(roughness),

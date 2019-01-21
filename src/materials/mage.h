@@ -78,7 +78,7 @@ namespace pbrt {
 	// MAGEMaterial Factory
 	//-------------------------------------------------------------------------
 
-	MAGEMaterial* CreateMAGEMaterial(const TextureParams& mp);
+	MAGEMaterial* CreateMAGEMaterial(const TextureParams& params);
 }
 
 #endif  // PBRT_MATERIALS_MAGE_H
